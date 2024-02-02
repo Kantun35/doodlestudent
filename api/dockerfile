@@ -1,0 +1,25 @@
+FROM maven:3.9.6 AS build
+
+#RUN apt-get update \
+#&& apt-get install -y -f nodejs \
+#&& apt-get install -y -f npm \
+#&& apt-get install -y -f git \
+#&& npm ci
+#&& npm install -g @angular/cli \
+#&& npm install --only=production
+
+WORKDIR /doodlestudent
+
+COPY . .
+
+#RUN git clone https://github.com/barais/doodlestudent.git --depth 1
+
+#RUN mvn clean install
+
+RUN mvn clean dependency:copy-dependencies package
+#RUN mvn deploy
+
+FROM openjdk:11-jre-slim
+COPY --from=build /doodlestudent/dist/tlcapi/tlcdemoApp-1.0.0-SNAPSHOT.jar /usr/local/lib/tlcdemoApp.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/tlcdemoApp.jar"]
