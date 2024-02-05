@@ -21,7 +21,7 @@ COPY . .
 
 #RUN mvn clean install
 
-RUN mvn clean dependency:copy-dependencies package
+RUN mvn -f ./pom.xml clean dependency:copy-dependencies package
 #RUN mvn deploy
 
 FROM openjdk:11-jre-slim
