@@ -15,7 +15,7 @@ RUN curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/
 && curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
 
 RUN mvn wrapper:wrapper
-RUN ./mvnw quarkus:add-extension -Dextensions='container-image-jib'
+#RUN ./mvnw quarkus:add-extension -Dextensions='container-image-jib'
 
 #WORKDIR /doodlestudent
 
