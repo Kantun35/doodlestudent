@@ -15,7 +15,7 @@ RUN ./mvnw quarkus:add-extension -Dextensions='container-image-jib'
 
 WORKDIR /doodlestudent
 
-COPY . .
+COPY . /doodlestudent
 
 #RUN git clone https://github.com/barais/doodlestudent.git --depth 1
 
