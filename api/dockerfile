@@ -1,5 +1,9 @@
 FROM maven:3.9.6 AS build
 
+WORKDIR /doodlestudent
+
+COPY . /doodlestudent
+
 #RUN apt-get update \
 #&& apt-get install -y -f nodejs \
 #&& apt-get install -y -f npm \
@@ -13,9 +17,9 @@ RUN curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/
 RUN mvn wrapper:wrapper
 RUN ./mvnw quarkus:add-extension -Dextensions='container-image-jib'
 
-WORKDIR /doodlestudent
+#WORKDIR /doodlestudent
 
-COPY . /doodlestudent
+#COPY . /doodlestudent
 
 #RUN git clone https://github.com/barais/doodlestudent.git --depth 1
 
