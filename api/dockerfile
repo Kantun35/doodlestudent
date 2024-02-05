@@ -2,7 +2,7 @@ FROM maven:3.8-openjdk-18-slim AS build
 
 WORKDIR /doodlestudent
 
-COPY . /doodlestudent
+COPY . .
 
 #RUN apt-get update \
 #&& apt-get install -y -f nodejs \
