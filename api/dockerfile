@@ -1,3 +1,4 @@
+#FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
 FROM maven:3.8-openjdk-18-slim AS build
 
 WORKDIR /doodlestudent
@@ -11,8 +12,9 @@ COPY . .
 #&& npm ci
 #&& npm install -g @angular/cli \
 #&& npm install --only=production
+
 RUN curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/ \
-&& curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
+&& curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/3.2.4.Final/quarkus-cli-3.2.4.Final-runner.jar
 
 RUN mvn wrapper:wrapper
 #RUN ./mvnw quarkus:add-extension -Dextensions='container-image-jib'
@@ -28,7 +30,10 @@ RUN mvn wrapper:wrapper
 RUN mvn -f ./pom.xml clean dependency:copy-dependencies package
 #RUN mvn deploy
 
-FROM openjdk:11-jre-slim
-COPY --from=build /doodlestudent/target/tlcdemoApp-1.0.0-SNAPSHOT.jar /usr/local/lib/tlcdemoApp.jar
+#FROM eclipse-temurin:17-jre-alpine as prod
+FROM eclipse-temurin:18-jre
+COPY --from=build /doodlestudent/target/ /usr/local/lib/
+#COPY --from=build /doodlestudent/target/tlcdemoApp-1.0.0-SNAPSHOT.jar /usr/local/lib/tlcdemoApp.jar
 EXPOSE 8080
-CMD ["java","-jar","/usr/local/lib/tlcdemoApp.jar"]
+#CMD ["java","-jar","/usr/local/lib/tlcdemoApp.jar"]
+CMD ["java","-jar","/usr/local/lib/quarkus-app/quarkus-run.jar"]
