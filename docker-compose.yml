@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  nginx:
+      container_name: nginx
+      image: nginx:latest
+      ports:
+        - "80:80"
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx2.conf:/etc/nginx/nginx2.conf
+        - ./nginx3.conf:/etc/nginx/nginx3.conf
+  db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tlc
+      - MYSQL_USER=tlc
+      - MYSQL_PASSWORD=tlc
+  etherpad:
+    image: etherpad/etherpad:stable
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./APIKEY.txt:/opt/etherpad-lite/APIKEY.txt
+  mail:
+    image: bytemark/smtp
+    restart: always
+    ports:
+      - "2525:25"
+  front:
+    build:
+      context: front
+      dockerfile: dockerfile
+    container_name: front
+    ports:
+      - 8080:8080
+    links:
+      - api
+    volumes:
+      - nginx.conf
+      - nginx2.conf
+      - nginx3.conf
+  api:
+    build:
+      context: api
+      dockerfile: dockerfile
+    container_name: api
+    restart: always
+    ports:
+      - 4200:80
+    command:  ["java","-Dquarkus.datasource.jdbc.url=jdbc:mysql://db:3306/tlc?useUnicode=true&serverTimezone=Europe/Paris","-jar","/usr/local/lib/tlcdemoApp.jar"]
